@@ -37,13 +37,11 @@ const steps = [
         {steps.map((step) => (
             <div class="how__step" data-id={step.id}>
 
-                <!-- Collapsed row: luôn hiển thị -->
                 <div class="how__row">
                     <span class="how__num">/{step.id}</span>
                     <h3 class="how__title">{step.title}</h3>
                 </div>
 
-                <!-- Expanded content: hiện khi hover -->
                 <div class="how__expanded">
                     <div class="how__expanded-inner">
                         <div class="how__expanded-text">
@@ -94,6 +92,7 @@ const steps = [
         border-top: 1px solid rgba(26, 23, 20, 0.15);
         overflow: hidden;
         cursor: default;
+        will-change: transform;
     }
 
     .how__step:last-child {
@@ -131,23 +130,34 @@ const steps = [
         line-height: 1.05;
         letter-spacing: -0.02em;
         margin: 0;
-        transition: letter-spacing 0.4s ease, opacity 0.3s ease;
+        transform-origin: left center;
+        transition: transform 0.4s ease, opacity 0.3s ease;
+    }
+    .how__step:hover .how__title {
+        transform: scaleX(1.01); 
     }
 
-    /* Mờ các step không hover */
     .how__steps:has(.how__step:hover) .how__step:not(:hover) .how__title {
         opacity: 0.25;
     }
 
     /* Expanded */
     .how__expanded {
-        display: grid;
-        grid-template-rows: 0fr;
-        transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-8px);
+        overflow: hidden;
+        will-change: max-height, opacity;
+        transition: 
+            max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 0.35s ease,
+            transform 0.35s ease;
     }
 
     .how__step:hover .how__expanded {
-        grid-template-rows: 1fr;
+        max-height: 400px; /* lớn hơn chiều cao thực tế */
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .how__expanded-inner {
@@ -233,8 +243,6 @@ const steps = [
 </style>
 
 <script>
-    // Không cần JS — interaction hoàn toàn bằng CSS :hover
-    // Chỉ dùng JS nếu muốn hỗ trợ touch (mobile)
     const steps = document.querySelectorAll('.how__step');
 
     steps.forEach(step => {
@@ -247,7 +255,6 @@ const steps = [
 </script>
 
 <style>
-    /* Touch fallback cho mobile */
     @media (hover: none) {
         .how__steps:has(.how__step.is-touch-active) .how__step:not(.is-touch-active) .how__title {
             opacity: 0.25;
