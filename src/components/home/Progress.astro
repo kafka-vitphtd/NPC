@@ -90,9 +90,10 @@ const steps = [
 
     .how__step {
         border-top: 1px solid rgba(26, 23, 20, 0.15);
-        overflow: hidden;
         cursor: default;
-        will-change: transform;
+        position: relative;        /* thêm */
+        height: 120px;             /* cố định — chỉnh theo design */
+        overflow: hidden;          /* bỏ will-change */
     }
 
     .how__step:last-child {
@@ -101,15 +102,18 @@ const steps = [
 
     /* Collapsed row */
     .how__row {
+        position: absolute;
+        inset: 0;
         display: flex;
-        align-items: baseline;
+        align-items: center;       /* căn giữa dọc thay vì baseline */
         gap: 40px;
-        padding: 28px 0;
-        transition: padding 0.4s ease;
+        padding: 0;                /* bỏ padding transition */
+        transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
     .how__step:hover .how__row {
-        padding: 28px 0 12px;
+        opacity: 0;
+        transform: translateY(-12px);
     }
 
     .how__num {
@@ -143,31 +147,26 @@ const steps = [
 
     /* Expanded */
     .how__expanded {
-        max-height: 0;
+        position: absolute;
+        inset: 0;
         opacity: 0;
-        transform: translateY(-8px);
-        overflow: hidden;
-        will-change: max-height, opacity;
-        transition: 
-            max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-            opacity 0.35s ease,
-            transform 0.35s ease;
+        transform: translateY(12px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        overflow: hidden;          /* bỏ max-height, will-change */
     }
 
     .how__step:hover .how__expanded {
-        max-height: 400px; /* lớn hơn chiều cao thực tế */
         opacity: 1;
         transform: translateY(0);
     }
 
     .how__expanded-inner {
-        overflow: hidden;
         display: grid;
         grid-template-columns: 380px 1fr;
         gap: 40px;
-        align-items: start;
-        padding-bottom: 0;
-        transition: padding-bottom 0.4s ease;
+        align-items: center;      
+        height: 100%;
+        padding: 16px 0;
     }
 
     .how__step:hover .how__expanded-inner {
@@ -258,15 +257,6 @@ const steps = [
     @media (hover: none) {
         .how__steps:has(.how__step.is-touch-active) .how__step:not(.is-touch-active) .how__title {
             opacity: 0.25;
-        }
-        .how__step.is-touch-active .how__expanded {
-            grid-template-rows: 1fr;
-        }
-        .how__step.is-touch-active .how__row {
-            padding: 28px 0 12px;
-        }
-        .how__step.is-touch-active .how__expanded-inner {
-            padding-bottom: 36px;
         }
     }
 </style>
